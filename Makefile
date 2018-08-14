@@ -1,4 +1,4 @@
-PROJECT_ID := dockerosm
+PROJECT_ID := docker-osm-20180622
 COMPOSE_FILE := docker-compose.yml
 # Uncomment the next line if you want to display data with Leaflet.
 # COMPOSE_FILE := docker-compose-web.yml
@@ -91,14 +91,14 @@ import_clip:
 	@echo "------------------------------------------------------------------"
 	@echo "Importing clip shapefile"
 	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)_db /usr/bin/shp2pgsql -c -I -D -s 4326 /home/settings/clip/clip.shp | docker exec -i $(PROJECT_ID)_db su - postgres -c "psql gis"
+	@docker exec -t -i $(PROJECT_ID)_db_1 /usr/bin/shp2pgsql -c -I -D -s 4326 /home/settings/clip/clip.shp | docker exec -i $(PROJECT_ID)_db su - postgres -c "psql gis"
 
 remove_clip:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Removing clip shapefile"
 	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)_db /bin/su - postgres -c "psql gis -c 'DROP TABLE IF EXISTS clip;'"
+	@docker exec -t -i $(PROJECT_ID)_db_1 /bin/su - postgres -c "psql gis -c 'DROP TABLE IF EXISTS clip;'"
 
 ###
 #    STATS
@@ -110,7 +110,7 @@ timestamp:
 	@echo "------------------------------------------------------------------"
 	@echo "Timestamp"
 	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)_imposm cat /home/settings/timestamp.txt
+	@docker exec -t -i $(PROJECT_ID)_imposm_1 cat /home/settings/timestamp.txt
 
 ###
 #    STYLES
@@ -122,14 +122,14 @@ import_styles: remove_styles
 	@echo "------------------------------------------------------------------"
 	@echo "Importing QGIS styles"
 	@echo "------------------------------------------------------------------"
-	@docker exec -i $(PROJECT_ID)_db su - postgres -c "psql -f /home/settings/qgis_style.sql gis"
+	@docker exec -i $(PROJECT_ID)_db_1 su - postgres -c "psql -f /home/settings/qgis_style.sql gis"
 
 remove_styles:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Removing QGIS styles"
 	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)_db /bin/su - postgres -c "psql gis -c 'DROP TABLE IF EXISTS layer_styles;'"
+	@docker exec -t -i $(PROJECT_ID)_db_1 /bin/su - postgres -c "psql gis -c 'DROP TABLE IF EXISTS layer_styles;'"
 
 backup_styles:
 	@echo
@@ -137,4 +137,4 @@ backup_styles:
 	@echo "Backup QGIS styles to BACKUP.sql"
 	@echo "------------------------------------------------------------------"
 	@echo "SET XML OPTION DOCUMENT;" > BACKUP-STYLES.sql
-	@ docker exec -t $(PROJECT_ID)_db su - postgres -c "/usr/bin/pg_dump --format plain --inserts --table public.layer_styles gis" >> BACKUP-STYLES.sql
+	@ docker exec -t $(PROJECT_ID)_db_1 su - postgres -c "/usr/bin/pg_dump --format plain --inserts --table public.layer_styles gis" >> BACKUP-STYLES.sql
