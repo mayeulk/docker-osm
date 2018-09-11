@@ -81,8 +81,16 @@ tables:
       type: string
     - name: type
       type: mapping_value
+    - key: toilets:disposal
+      name: toilets_disposal
+      type: string
+    - key: toilets:handwashing
+      name: toilets_handwashing
+      type: string
     mapping:
       amenity:
+      - toilets
+      - shower      
       - university
       - school
       - library
