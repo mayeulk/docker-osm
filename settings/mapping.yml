@@ -1,3 +1,8 @@
+# https://imposm.org/docs/imposm3/latest/mapping.html#tags
+tags:
+  load_all: true
+  # Add a comma above and uncomment next line to exclude some tags
+  # exclude: [created_by, source, "tiger:*"]
 areas:
   area_tags: [buildings, landuse, leisure, natural, aeroway]
   linear_tags: [highway, barrier]
@@ -70,12 +75,14 @@ tables:
       - runway
       - taxiway
     type: linestring
-  amenities:
+  amenities_p:  # _p for points
     columns:
     - name: osm_id
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -89,6 +96,7 @@ tables:
       type: string
     mapping:
       amenity:
+      - [__any__]
       - toilets
       - shower      
       - university
@@ -100,6 +108,39 @@ tables:
       - police
       - townhall
     type: point
+  amenities_a:  # _a for areas (=polygons)
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: tags_hstore
+      type: hstore_tags
+    - key: name
+      name: name
+      type: string
+    - name: type
+      type: mapping_value
+    - key: toilets:disposal
+      name: toilets_disposal
+      type: string
+    - key: toilets:handwashing
+      name: toilets_handwashing
+      type: string
+    mapping:
+      amenity:
+      - [__any__]
+      - toilets
+      - shower      
+      - university
+      - school
+      - library
+      - fuel
+      - hospital
+      - fire_station
+      - police
+      - townhall
+    type: polygon
   barrierpoints:
     columns:
     - name: osm_id
@@ -393,6 +434,36 @@ tables:
       - suburb
       - locality
     type: point
+refugee_settlement_boundaries:
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: type
+      type: mapping_value
+    - key: admin_level
+      name: admin_level
+      type: integer
+    - key: boundary
+      name: type  #refugee_camp
+      type: string
+    - key: operator
+      name: operator
+      type: string
+    - {key: operator:type, name: operator_type, type: string}  # ngo, community, government
+    - {key: population, name: population, type: string} # number, estimated population
+    - {key: capacity, name: capacity, type: string} # number, estimated or planned max population
+    - {key: start_date, name: start_date, type: string} # date, establishment
+    name: 
+    mapping:
+      boundary:
+      - refugee_camp # https://wiki.openstreetmap.org/wiki/WikiProject_Uganda/Uganda_Crowdsourcing_Non-Camp_Refugee_Data#Refugee_settlement_boundaries
+    type: polygon
+    
   roads:
     columns:
     - name: osm_id
