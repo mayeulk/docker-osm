@@ -1,4 +1,5 @@
 # https://imposm.org/docs/imposm3/latest/mapping.html#tags
+# TODO: add a (post import?) task to load (as a postgresql comment?) this YML file in the database, for documentation
 tags:
   load_all: true
   # Add a comma above and uncomment next line to exclude some tags
@@ -47,6 +48,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -65,6 +68,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -89,22 +94,97 @@ tables:
     - name: type
       type: mapping_value
     mapping:
-      amenity:
-      - university
-      - school
-      - library
-      - fuel
-      - hospital
+      amenity: # from https://wiki.openstreetmap.org/wiki/Humanitarian_OSM_Tags/Humanitarian_Data_Background  https://wiki.openstreetmap.org/wiki/Humanitarian_OSM_Tags/Humanitarian_Data_Model
+      - __ALL__ # this seems to have no effect
+# security
       - fire_station
       - police
+      - sar_sector
+      - fire_hydrant
+# civic
       - townhall
-    type: point
+      - court_house
+      - townhall
+      - embassy
+      - post_office
+# OSM wiki. Amenity. Sustenance
+      - bar
+      - cafe
+      - drinking_water
+      - fast_food
+      - food_court
+      - ice_cream
+      - pub
+      - restaurant
+      - marketplace # HOT OSM
+# OSM wiki. Amenity. Education
+      - college
+      - kindergarten
+      - library
+      - school
+      - music_school
+      - driving_school
+      - language_school
+      - university
+      - research_institute
+# OSM wiki. Amenity. Transportation
+      - bicycle_rental
+      - boat_rental
+      - bus_station
+      - ferry_terminal # HOT OSM
+      - car_rental
+      - car_sharing
+      - car_wash
+      - charging_station
+      - ferry_terminal
+      - fuel
+      - parking
+      - parking_entrance
+      - parking_space
+      - taxi
+# OSM wiki. Amenity. Financial
+      - atm
+      - bank
+      - bureau_de_change
+      - microfinance # HOT OSM
+      - mobile_money_agent # HOT OSM
+      - money_transfer # HOT OSM
+# OSM wiki. Amenity. Healthcare      
+      - clinic
+      - dentist
+      - doctors
+      - hospital
+      - mortuary
+      - nursing_home # discouraged use as tag
+      - pharmacy
+      - social_facility
+      - veterinary
+      - toilets
+      - grave_yard
+      - shower # for UNHCR
+# healthcare = blood_donation
+# community
+      - community_centre
+      - place_of_worship
+# water
+      - drinking_water # This tag value should be used on nodes or areas that shows the source of a potable water that humans can drink from
+# https://wiki.openstreetmap.org/wiki/Tag:amenity%3Ddrinking_water
+      - water_point # is a place to get larger amounts of drinking water, usually for caravans, RV's, or boats
+      - watering_place # is a place where animals drink water
+# natural=spring is used where water flows naturally out of the ground.
+# man_made=water_well is a man made excavation in the ground to gain water from an aquifer. 
+# shop=water for shops that sell water. Note that amenity=drinking water, which implies no-fee access to water, is not appropriate for these shops.
+      - fountain # is a fountain for used for cultural, decoration and/or recreational purposes.
+# have a look at https://wiki.openstreetmap.org/wiki/Key:amenity      
+    type: point # FIXME: will this take polygons too? (transformed into points?)
   barrierpoints:
     columns:
     - name: osm_id
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -135,6 +215,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -162,6 +244,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -177,6 +261,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -228,6 +314,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -357,6 +445,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -398,6 +488,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - name: type
       type: mapping_value
     - key: name
@@ -472,12 +564,38 @@ tables:
           - pier
           - groyne
     type: linestring
+
+# shop IN (''herbalist'',''nutrition_supplements'' # HOT OSM      
+  shop:
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: tags_hstore
+      type: hstore_tags
+    - key: name
+      name: name
+      type: string
+    - name: type
+      type: mapping_value
+    - key: ref
+      name: ref
+      type: string
+    mapping:
+# shop IN (''herbalist'',''nutrition_supplements'' # HOT OSM      
+      shop:
+      - __any__
+# type is mandatory
+    type: point
   transport_areas:
     columns:
     - name: osm_id
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -499,6 +617,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -531,6 +651,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
@@ -557,6 +679,8 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - name: tags_hstore
+      type: hstore_tags
     - key: name
       name: name
       type: string
