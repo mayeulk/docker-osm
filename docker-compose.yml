@@ -2,29 +2,26 @@ version: '2.1'
 
 volumes:
   osm-postgis-data:
-    driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '~/bin/dockerosm_1/docker-osm-20181009/vol/import_osm-postgis-data'
+      device: /home/admin/bin/dockerosm_1/docker-osm-20181009/vol/import_osm-postgis-data
   import_done:
-    driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '~/bin/dockerosm_1/docker-osm-20181009/vol/import_done'
+      device: /home/admin/bin/dockerosm_1/docker-osm-20181009/vol/import_done
   import_queue:
-    driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '~/bin/dockerosm_1/docker-osm-20181009/vol/import_queue'
+      device: /home/admin/bin/dockerosm_1/docker-osm-20181009/vol/import_queue
   cache:
-    driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '~/bin/dockerosm_1/docker-osm-20181009/vol/cache'
+      device: /home/admin/bin/dockerosm_1/docker-osm-20181009/vol/cache
+
 
 services:
   db:
